@@ -11,39 +11,88 @@ function App() {
   const [winner, setWinner] = useState("");
   
   const checkIfWin = () => {
-    // Vertical
-    if (
-      (!!moves[0][0] && moves[0][0] === moves[1][0] && moves[0][0] === moves[2][0]) ||
-      (!!moves[0][1] && moves[0][1] === moves[1][1] && moves[0][1] === moves[2][1]) ||
-      (!!moves[0][2] &&moves[0][2] === moves[1][2] && moves[0][2] === moves[2][2]) 
-    ) {
-      setWinner(player);
-    }
     // Horizontal
-
+    for (let i=0; i<=2; i++){
+      if (moves[i][0] !== "") {
+        if (moves[i][0] === moves[i][1] && moves[i][1] === moves[i][2]) {
+          return true;
+        }
+      }
+    }
+    
+    // Vertical
+    for (let i=0; i<=2; i++){
+      if (moves[0][i] !== "") {
+        if (moves[0][i] === moves[1][i] && moves[1][i] === moves[2][i]) {
+          return true;
+        }
+      }
+    }
+    
     // Diagonal
+    if (moves[0][0] !== "") {
+      if (moves[0][0] === moves[1][1] && moves[1][1] === moves[2][2]) {
+        return true;
+      }
+    }
+
+    if (moves[0][2] !== "") {
+      if (moves[0][2] === moves[1][1] && moves[1][1] === moves[2][0]) {
+        return true;
+      }
+    }
+
+    return false;
 
   }
 
-
-  const playMove = (row, col) => {
+  const updateBoard = (row, col) => {
     const newMoves = [...moves];
     newMoves[row][col] = player;
     setMoves(newMoves);
-    checkIfWin();
+  }
+
+  const changePlayer = () => {
     if (player === "X") {
       setPlayer("O");
     } else {
       setPlayer("X");
     }
   }
+
+
+  const playMove = (row, col) => {
+    if (winner === ""){
+      if (moves[row][col] !== "X" && moves[row][col] !== "O") {
+        updateBoard(row, col);
+        const didWin = checkIfWin();
+        if (didWin) {
+          setWinner(player);
+        }
+        changePlayer();
+      }
+    }
+  }
+  
+  const resetGame = () => {
+    
+  }
+
   return (
     <div className='App'>
-      {winner && <h2>Winner {winner}</h2>}
+      {winner && 
+      <div className='WinnerDisplay'>
+        <h2>Winner {winner}</h2>
+        <div className='Actions'>
+          <button>Next Match</button>
+          <button onClick={resetGame()}>Reset Game</button>
+        </div>
+      </div>
+      }
       <div className='TicTacToeBoard'>
         {moves.map((row, row_index) => {
-          return row.map((move, col_index) => {
-           return <button className='Square' onClick={() => {playMove(row_index, col_index)}} disabled={!!move || !!winner}>{move}</button>
+          return row.map((col, col_index) => {
+           return <button key={`${row_index}-${col_index}`} className='Square' onClick={() => {playMove(row_index, col_index)}} disabled={winner !== ""}>{col}</button>
           });
         })}
       </div>

@@ -5,6 +5,29 @@
   justify-content: center;
   align-items: center;
 }
+
+.WinnerDisplay {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: #ffffff;
+  width: 100%;
+  text-align: center;
+  padding: 2rem;
+}
+
+.WinnerDisplay h2 {
+  font-size: 4rem;
+}
+
+.WinnerDisplay .Actions {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
 .TicTacToeBoard {
   background-color: #7d9ec1;
   display: flex;
