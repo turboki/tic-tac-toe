@@ -9,6 +9,7 @@ function App() {
   ]);
   const [player, setPlayer] = useState("X");
   const [winner, setWinner] = useState("");
+  const [score, setScore] = useState({"X":0, "O": 0});
   
   const checkIfWin = () => {
     // Horizontal
@@ -46,6 +47,17 @@ function App() {
 
   }
 
+  const checkIfDraw = () => {
+    for (let i = 0; i <= 2; i++) {
+      for (let j = 0; j <= 2; j++) {
+        if (moves[i][j] === "") {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
   const updateBoard = (row, col) => {
     const newMoves = [...moves];
     newMoves[row][col] = player;
@@ -66,35 +78,58 @@ function App() {
       if (moves[row][col] !== "X" && moves[row][col] !== "O") {
         updateBoard(row, col);
         const didWin = checkIfWin();
+        const isDraw = checkIfDraw();
         if (didWin) {
-          setWinner(player);
+          setWinner(`Winner: ${player}`);
+        } else if (isDraw) {
+          setWinner("DRAW");
         }
+        
         changePlayer();
       }
     }
   }
   
   const resetGame = () => {
-    
+    setMoves([
+      ['', '', ''],
+      ['', '', ''],
+      ['', '', ''],
+    ]);
+    setPlayer("X");
+    setWinner("");
   }
 
   return (
     <div className='App'>
       {winner && 
       <div className='WinnerDisplay'>
-        <h2>Winner {winner}</h2>
+        <h2>{winner}</h2>
         <div className='Actions'>
           <button>Next Match</button>
-          <button onClick={resetGame()}>Reset Game</button>
+          <button onClick={resetGame}>Reset Game</button>
         </div>
       </div>
       }
+      <div className='GameTitle'>
+        <h1>Tic-Tac-Toe</h1>
+      </div>
       <div className='TicTacToeBoard'>
         {moves.map((row, row_index) => {
           return row.map((col, col_index) => {
            return <button key={`${row_index}-${col_index}`} className='Square' onClick={() => {playMove(row_index, col_index)}} disabled={winner !== ""}>{col}</button>
           });
         })}
+      </div>
+      <div className='GameDetails'>
+        <div className='PlayerScores'>
+            X: {score.X}, O: {score.O}
+        </div>
+        {winner === "" &&
+          <div className='PlayerTurn'>
+            Player Turn: {player}
+          </div>
+        }
       </div>
     </div>
   );
